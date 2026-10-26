@@ -8,11 +8,15 @@
 - 界面：托盘图标（按电量变色）+ 悬停提示 + 点击弹出小卡片
 - 低电量提醒：跌破 20% 弹一条 Windows 系统通知（点通知也能打开卡片）
 
+> **想要更轻的版本？** → [**C 版**](https://github.com/ahutsunboy/2.4g-battery-tray-c)：
+> 同样的界面和功能，用 Win32 重写，单个 81 KB 的 exe，零运行时依赖，
+> 私有内存 2.5 MB 量级。不用装 Python。
+
 ---
 
 ## 为什么不是网页版
 
-原本想直接扩展现有的网页工具（`../网页/` 里的 WebUSB / WebHID 查看器），
+原本想直接扩展现有的网页工具（项目早期写的 WebUSB / WebHID 查看器），
 但这条路在这两台设备上**走不通**，原因很明确：
 
 Chrome 的 WebHID 有一份硬编码黑名单
@@ -38,36 +42,72 @@ Chrome 的 WebHID 有一份硬编码黑名单
 
 ---
 
-## 快速开始
+## 从 GitHub 拉下来怎么跑
 
-1. 双击 **`启动.vbs`**（无黑框）或 **`启动.bat`**
-2. 托盘区出现一个电池图标 → 左键点开卡片，悬停看提示
-3. 右键图标 → 开机自动启动 / **低电量提醒** / 查看日志 / 退出
-4. 图标在 Windows 11 默认会被收进「^ 隐藏的图标」里，拖到任务栏上即可常显
+### 1. 取代码
+
+```bat
+git clone https://github.com/ahutsunboy/2.4g-battery-tray-python.git
+cd 2.4g-battery-tray-python
+```
+
+没装 git 就在仓库页点 **Code → Download ZIP**，解压后进目录。
+
+注意：仓库里**不含 exe，也不含 Python 解释器**，下面两步要自己准备。
+
+### 2. 准备 Python（不需要 pip install）
+
+整个项目只用标准库 + `ctypes` 调 Win32 / GDI / `hid.dll`，
+**一条 pip 命令都不用执行**。只需要一个 `pythonw.exe`（Python 3.9 或更高）。
+三种做法任选：
+
+| 方式 | 做法 |
+|---|---|
+| 装官方 Python | 安装时勾选 **Add python.exe to PATH**，装完 `pythonw` 就在 PATH 里 |
+| 便携版 | 把含 `pythonw.exe` 的整个运行时目录放到仓库根下的 `runtime\`，之后整个文件夹能拷到 U 盘 |
+| 已有环境 | `pythonw` 已经在 `PATH` 里就行 |
+
+启动器按这个顺序找 `pythonw.exe`：
+
+1. `runtime\pythonw.exe`（便携版放这里，整个目录可拷走）
+2. `PATH` 里的 `pythonw`
+3. `D:\software\codingApp\miniconda\pythonw.exe`（开发者本机的兜底，别人的机器上没有，忽略即可）
+
+验证：在 cmd 里执行 `where pythonw`，能打印出一个路径就对了。
+
+### 3. 启动
+
+双击 **`启动.vbs`**（无黑框，推荐）或 **`启动.bat`**。
+
+托盘区出现一个电池图标 → 左键点开卡片，悬停看提示 →
+右键图标 → 开机自动启动 / 低电量提醒 / 查看日志 / 退出。
+Windows 11 默认会把它收进 `^` 隐藏图标区，拖到任务栏上即可常显。
 
 | 文件 | 作用 |
 |---|---|
 | `启动.vbs` | 静默启动（推荐，双击即可） |
-| `启动.bat` | 启动；`启动.bat --print` 只打印它将使用的 pythonw 路径 |
-| `调试启动.bat` | 带控制台启动，能看到 Python 报错 |
+| `启动.bat` | 启动；`启动.bat --print` 只打印它将使用的 pythonw 路径，不启动 |
+| `调试启动.bat` | 带控制台启动，能看到 Python 的报错 |
 | `退出.bat` | 强制结束（平时请用托盘右键 → 退出） |
 
 **开机自启**：托盘图标右键 → 勾选「开机自动启动」
 （写入 `%APPDATA%\...\Startup\2.4G电量托盘.vbs`，取消勾选即删除）。
 
-### 运行环境
+### 4. 双击了没反应怎么办
 
-需要一个 `pythonw.exe`（Python 3.9+，标准库即可）。启动器按顺序查找：
+先双击 **`调试启动.bat`** —— 它保留一个控制台窗口，报错会直接打在上面。
+按顺序排查：
 
-1. `runtime\pythonw.exe`（便携版放这里，整个目录可拷走）
-2. `PATH` 里的 `pythonw`
-3. `D:\software\codingApp\miniconda\pythonw.exe`
+1. 跑 `启动.bat --print`，看它找到的是哪个 `pythonw`
+2. 跑 `where pythonw`，没有输出就是 PATH 没配好
+3. `python --version` 低于 3.9 就换一个
+4. 已经有一个实例在跑（单实例互斥），先在托盘右键退出再启动
 
 ---
 
 ## 界面
 
-配色与图形取自 `../UI/` 里的两张参考图：白底、深灰大号百分比、亮绿胶囊进度条、
+配色与图形取自项目早期的界面设计稿：白底、深灰大号百分比、亮绿胶囊进度条、
 灰线条 + 浅蓝填充的设备图标（矢量栅格化，4× 超采样抗锯齿）。
 
 ```
