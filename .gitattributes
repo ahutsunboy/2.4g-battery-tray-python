@@ -1,0 +1,18 @@
+# 默认按文本处理，仓库内统一 LF
+* text=auto eol=lf
+
+# Windows 批处理必须是 CRLF，否则某些语法会异常
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# .vbs 是 UTF-16 带 BOM（WSH 只认 ANSI / UTF-16），
+# 必须声明为二进制，否则 git 的换行/编码规范化会把它写坏
+*.vbs binary
+
+*.py   text eol=lf
+*.json text eol=lf
+*.md   text eol=lf
+
+*.png  binary
+*.ico  binary
+*.exe  binary

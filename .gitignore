@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.venv/
+venv/
+
+# 运行期产物
+*.log
+*.pid
+
+# 开发脚本生成的截图 / 渲染中间件（预览图在仓库根目录，不要忽略）
+tray/_dev/*.png
+tray/_dev/*.tmp
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store

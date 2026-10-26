@@ -1,0 +1,14 @@
+{
+  "_comment": "低电量提醒。enabled 也可用托盘右键菜单切换；threshold=跌破多少提醒；rearm=回到多少以上重新武装（必须大于 threshold）。改完保存，5 秒内生效，无需重启。",
+  "_comment_memory": "内存相关的取舍。trim_working_set=true 时，关着卡片且 idle_seconds 秒没有任何变化，就把闲置页面还给系统（任务管理器里的内存会立刻降到几 MB；私有内存不变，下次打开卡片多几十毫秒）。设为 false 则一直保持热态，响应最快。",
+  "version": 1,
+  "low_battery": {
+    "enabled": true,
+    "threshold": 20,
+    "rearm": 25
+  },
+  "memory": {
+    "trim_working_set": true,
+    "idle_seconds": 120
+  }
+}
